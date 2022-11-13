@@ -63,12 +63,53 @@ io.on('connection', (socket) => {
 
   // ========================
 
-  socket.on("circle position", position => {
-    // for all 
-    // io.emit('move circle', position)
-    // broadcast - all without user emit
-    socket.broadcast.emit('move circle', position)
-  })
+  // socket.on("circle position", position => {
+  //   // for all 
+  //   // io.emit('move circle', position)
+  //   // broadcast - all without user emit
+  //   socket.broadcast.emit('move circle', position)
+  // })
+
+
+  // // SALAS =================
+
+  // socket.connectedRoom = ""
+  // socket.on('connect to room', room => {
+  //   // Por defecto estamos conectado a una sala que es la global
+
+  //   socket.leave(socket.connectedRoom)
+  //   switch (room) {
+  //     case "room1":
+  //       socket.join('room1')
+  //       socket.connectedRoom = "room1"
+  //       break;
+        
+  //     case "room2":
+  //       socket.join('room2')
+  //       socket.connectedRoom = "room2"
+  //       break;
+        
+  //     case "room3":
+  //       socket.join('room3')
+  //       socket.connectedRoom = "room3"
+  //       break;
+      
+  //     default:
+  //       break;
+  //   }
+  // })
+
+  // socket.on('message room', message => {
+  //   // Sala a la que esta conectada
+  //   const room = socket.connectedRoom
+  //   // enviar a una sala seleccionada
+  //   io.to(room).emit('send message',{message, room})
+  // })
+
+  // ===========0
+  // NAMESPACES
+
+  
 
 });
 

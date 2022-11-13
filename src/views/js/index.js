@@ -1,4 +1,4 @@
-const socket = io()
+// const socket = io()
 
 // function checkSocketStatus() {
 //   console.log("Estado del socket: " + socket.connected);
@@ -69,33 +69,85 @@ const socket = io()
 // }, 2500)
 
 // ===================
-const drawCircle = position => {
-  circle.style.top = position.top
-  circle.style.left = position.left
-}
-const drag = e => {
-  // const clientX = e.clientX
-  // const clientY = e.clientY
+// const drawCircle = position => {
+//   circle.style.top = position.top
+//   circle.style.left = position.left
+// }
+// const drag = e => {
+//   // const clientX = e.clientX
+//   // const clientY = e.clientY
 
-  const position = {
-    top: e.clientY + "px",
-    left: e.clientX + "px"
-  }
-  drawCircle(position)
-  socket.emit("circle position", position)
-  // circle.style.top = clientY + "px"
-  // circle.style.left = clientX + "px"
-}
+//   const position = {
+//     top: e.clientY + "px",
+//     left: e.clientX + "px"
+//   }
+//   drawCircle(position)
+//   socket.emit("circle position", position)
+//   // circle.style.top = clientY + "px"
+//   // circle.style.left = clientX + "px"
+// }
 
-const circle = document.querySelector('#circle')
-circle.addEventListener('mousedown', e => {
-  document.addEventListener('mousemove', drag)
-})
-circle.addEventListener('mouseup', e => {
-  document.removeEventListener('mousemove', drag)
-})
-socket.on('move circle', position => {
-  // circle.style.top = position.top
-  // circle.style.left = position.left
-  drawCircle(position)
-})
+// const circle = document.querySelector('#circle')
+// circle.addEventListener('mousedown', e => {
+//   document.addEventListener('mousemove', drag)
+// })
+// circle.addEventListener('mouseup', e => {
+//   document.removeEventListener('mousemove', drag)
+// })
+// socket.on('move circle', position => {
+//   // circle.style.top = position.top
+//   // circle.style.left = position.left
+//   drawCircle(position)
+// })
+
+// // ===============0
+// // salas
+
+// const connectRoom1 = document.querySelector("#connectRoom1")
+// const connectRoom2 = document.querySelector("#connectRoom2")
+// const connectRoom3 = document.querySelector("#connectRoom3")
+
+// connectRoom1.addEventListener('click', () => {
+//   socket.emit('connect to room', 'room1')
+// })
+
+// connectRoom2.addEventListener('click', () => {
+//   socket.emit('connect to room', 'room2')
+// })
+
+// connectRoom3.addEventListener('click', () => {
+//   socket.emit('connect to room', 'room3')
+// })
+
+// const sendMessage = document.querySelector("#sendMessage")
+
+// sendMessage.addEventListener('click', () => {
+//   const message = prompt("Mensaje")
+//   socket.emit('message room', message)
+// })
+
+// // Recibir el evento y el mensaje
+// socket.on('send message', data => {
+//   const {room, message} = data
+//   const li = document.createElement("li")
+//   li.textContent = message
+
+//   document.querySelector(`#${room}`).append(li)
+// })
+
+
+const user = prompt("Escribe tu usuario")
+const profes = [
+  "Juan",
+  "GNDX",
+  "RETAX"
+]
+
+let socketNamespace, group;
+
+const chat = document.querySelector('#chat')
+const namespace = document.querySelector("#namespace")
+
+if (profes.includes(user)) {
+  socketNamespace = io("/teach")
+}
