@@ -181,21 +181,57 @@
 
 // OFFLINE
 
+// const socket = io()
+// const send = document.querySelector("#send")
+// const disconnect = document.querySelector("#disconnect")
+// const reconnect = document.querySelector("#connect")
+
+// send.addEventListener("click", () => {
+//   if (socket.connected) {
+//     socket.emit("is connected", "esta connectado!!!")
+//   }
+// })
+
+// disconnect.addEventListener('click', () => {
+//   socket.disconnect()
+// })
+
+// reconnect.addEventListener('click', () => {
+//   socket.connect()
+// })
+
+
+// ===================
 const socket = io()
-const send = document.querySelector("#send")
-const disconnect = document.querySelector("#disconnect")
-const reconnect = document.querySelector("#connect")
+const drawCircle = position => {
+  circle.style.top = position.top
+  circle.style.left = position.left
+}
+const drag = e => {
+  // const clientX = e.clientX
+  // const clientY = e.clientY
 
-send.addEventListener("click", () => {
-  if (socket.connected) {
-    socket.emit("is connected", "esta connectado!!!")
+  const position = {
+    top: e.clientY + "px",
+    left: e.clientX + "px"
   }
-})
+  drawCircle(position)
+  console.log("se envia el evento al servidor");
+  // con volatile los eventos no se almacenan en el buffer
+  socket.volatile.emit("circle position", position)
+  // circle.style.top = clientY + "px"
+  // circle.style.left = clientX + "px"
+}
 
-disconnect.addEventListener('click', () => {
-  socket.disconnect()
+const circle = document.querySelector('#circle')
+circle.addEventListener('mousedown', e => {
+  document.addEventListener('mousemove', drag)
 })
-
-reconnect.addEventListener('click', () => {
-  socket.connect()
+circle.addEventListener('mouseup', e => {
+  document.removeEventListener('mousemove', drag)
+})
+socket.on('move circle', position => {
+  // circle.style.top = position.top
+  // circle.style.left = position.left
+  drawCircle(position)
 })

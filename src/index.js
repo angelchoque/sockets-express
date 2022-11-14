@@ -138,9 +138,15 @@ app.get('/', (req, res) => {
 // })
 
 // OFFLINE
-io.on('connection', (socket) => {
-  socket.on('is connected', message => {
-    console.log(message)
+// io.on('connection', (socket) => {
+//   socket.on('is connected', message => {
+//     console.log(message)
+//   })
+// })
+
+io.on('connection', socket => {
+    socket.on("circle position", position => {
+    socket.broadcast.emit('move circle', position)
   })
 })
 
