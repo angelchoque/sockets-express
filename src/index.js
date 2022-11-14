@@ -17,100 +17,124 @@ app.get('/', (req, res) => {
 
 // const socketsOnline = []
 
-io.on('connection', (socket) => {
-  // socketsOnline.push(socket.id)
-  // console.log(io.engine.clientsCount)
-  // console.log(socket.id);
 
-  // socket.on('disconnect', () => {
-  //   console.log("Socket " + socket.id + "is disconnected")
-  //   // socketsOnline = [...socketsOnline.filter(i => i !== socket.id)]
-  // })
+// io <- coneccion por defecto al namespace global
+// io.on('connection', (socket) => {
+//   // socketsOnline.push(socket.id)
+//   // console.log(io.engine.clientsCount)
+//   // console.log(socket.id);
 
-  // socket.conn.once('upgrade', () => {
-  //   console.log("HTTP Long-Polling to " + socket.conn.transport.name)
-  // })
+//   // socket.on('disconnect', () => {
+//   //   console.log("Socket " + socket.id + "is disconnected")
+//   //   // socketsOnline = [...socketsOnline.filter(i => i !== socket.id)]
+//   // })
 
-  // // Emisión básica
-  // socket.emit('welcome', "Ahora estas conectado")
+//   // socket.conn.once('upgrade', () => {
+//   //   console.log("HTTP Long-Polling to " + socket.conn.transport.name)
+//   // })
 
-  // socket.on('server', (data) => {
-  //   console.log(data)
-  // })
+//   // // Emisión básica
+//   // socket.emit('welcome', "Ahora estas conectado")
 
-  // // emit to everyone
+//   // socket.on('server', (data) => {
+//   //   console.log(data)
+//   // })
 
-  // io.emit("name_emit", socket.id, ' is connected')
+//   // // emit to everyone
 
-  // socket.on('last', (message) => {
-  //   const lastSocket = socketsOnline.at(-1)
-  //   io.to(lastSocket).emit("saludo", message)
-  // })
+//   // io.emit("name_emit", socket.id, ' is connected')
 
-  // // on - once - off
+//   // socket.on('last', (message) => {
+//   //   const lastSocket = socketsOnline.at(-1)
+//   //   io.to(lastSocket).emit("saludo", message)
+//   // })
 
-  // socket.emit('on', "Hola on")
-  // socket.emit('on', "Hola on")
-  // socket.emit('on', "Hola on")
+//   // // on - once - off
 
-  // socket.emit('once', "Hola once")
-  // socket.emit('once', "Hola once")
+//   // socket.emit('on', "Hola on")
+//   // socket.emit('on', "Hola on")
+//   // socket.emit('on', "Hola on")
 
-  // socket.emit('off', "hola off")
-  // setTimeout(() => {
-  //   socket.emit('off', "hola off 2")
-  // }, 3000)
+//   // socket.emit('once', "Hola once")
+//   // socket.emit('once', "Hola once")
 
-  // ========================
+//   // socket.emit('off', "hola off")
+//   // setTimeout(() => {
+//   //   socket.emit('off', "hola off 2")
+//   // }, 3000)
 
-  // socket.on("circle position", position => {
-  //   // for all 
-  //   // io.emit('move circle', position)
-  //   // broadcast - all without user emit
-  //   socket.broadcast.emit('move circle', position)
-  // })
+//   // ========================
+
+//   // socket.on("circle position", position => {
+//   //   // for all 
+//   //   // io.emit('move circle', position)
+//   //   // broadcast - all without user emit
+//   //   socket.broadcast.emit('move circle', position)
+//   // })
 
 
-  // // SALAS =================
+//   // // SALAS =================
 
-  // socket.connectedRoom = ""
-  // socket.on('connect to room', room => {
-  //   // Por defecto estamos conectado a una sala que es la global
+//   // socket.connectedRoom = ""
+//   // socket.on('connect to room', room => {
+//   //   // Por defecto estamos conectado a una sala que es la global
 
-  //   socket.leave(socket.connectedRoom)
-  //   switch (room) {
-  //     case "room1":
-  //       socket.join('room1')
-  //       socket.connectedRoom = "room1"
-  //       break;
+//   //   socket.leave(socket.connectedRoom)
+//   //   switch (room) {
+//   //     case "room1":
+//   //       socket.join('room1')
+//   //       socket.connectedRoom = "room1"
+//   //       break;
         
-  //     case "room2":
-  //       socket.join('room2')
-  //       socket.connectedRoom = "room2"
-  //       break;
+//   //     case "room2":
+//   //       socket.join('room2')
+//   //       socket.connectedRoom = "room2"
+//   //       break;
         
-  //     case "room3":
-  //       socket.join('room3')
-  //       socket.connectedRoom = "room3"
-  //       break;
+//   //     case "room3":
+//   //       socket.join('room3')
+//   //       socket.connectedRoom = "room3"
+//   //       break;
       
-  //     default:
-  //       break;
-  //   }
-  // })
+//   //     default:
+//   //       break;
+//   //   }
+//   // })
 
-  // socket.on('message room', message => {
-  //   // Sala a la que esta conectada
-  //   const room = socket.connectedRoom
-  //   // enviar a una sala seleccionada
-  //   io.to(room).emit('send message',{message, room})
-  // })
+//   // socket.on('message room', message => {
+//   //   // Sala a la que esta conectada
+//   //   const room = socket.connectedRoom
+//   //   // enviar a una sala seleccionada
+//   //   io.to(room).emit('send message',{message, room})
+//   // })
 
-  // ===========0
-  // NAMESPACES
+//   // ===========0
+//   // NAMESPACES
+
 
   
 
-});
+// });
+
+
+
+// NAMESPACES ===== io.of <- conecta a un namespace en especifico
+const teachers = io.of("teachers")
+const students = io.of("students")
+
+// usamos el namespace personalizado
+teachers.on("connection", socket => {
+  console.log(socket.id + " se a conectado a la sala de profes")
+  socket.on('message namespace', data => {
+    teachers.emit("message", data)
+  })
+})
+
+students.on("connection", socket => {
+  console.log(socket.id + " se a conectado a la sala de estudiantes")
+  socket.on("message namespace", data => {
+    students.emit('message', data)
+  })
+})
 
 httpServer.listen(3000);

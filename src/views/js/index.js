@@ -149,5 +149,32 @@ const chat = document.querySelector('#chat')
 const namespace = document.querySelector("#namespace")
 
 if (profes.includes(user)) {
-  socketNamespace = io("/teach")
+  socketNamespace = io("/teachers")
+  group = "teachers"
+
+} else {
+  socketNamespace = io("/students")
+  group = "students"
 }
+
+socketNamespace.on("connect", () => {
+  namespace.textContent = group;
+})
+
+
+const sendMessageNamespace = document.querySelector("#sendMessageNamespace")
+sendMessageNamespace.addEventListener('click', () => {
+  const message = prompt("escribe tu mensaje")
+  socketNamespace.emit("message namespace", {
+    message,
+    user
+  })
+})
+
+socketNamespace.on("message", data => {
+  const {message, user} = data
+  const li = document.createElement("li")
+  li.textContent = `${user}: ${message}`
+
+  chat.append(li)
+})
