@@ -1,6 +1,7 @@
 // process.env.DEBUG = "*";
 process.env.DEBUG = "engine, socket.io:socket";
 
+import { instrument } from "@socket.io/admin-ui";
 import express from "express";
 import { createServer } from 'http';
 import path from "path";
@@ -9,7 +10,20 @@ import * as url from 'url';
 
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer);
+const io = new Server(httpServer, {
+  cors: {
+    origin: ["https://admin.socket.io"],
+    credentials: true
+  }
+});
+instrument(io, {
+  auth: {
+    type: "basic",
+    username: "admin",
+    password: "$2a$12$gC.uSjv5pskWFcQwkZ1oluAQJ97kVgIpIrfobHO7K8aJfw0Y8YFwG"
+  }
+})
+ 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 app.use(express.static(path.join(__dirname, '/views')));
@@ -149,27 +163,35 @@ app.get('/', (req, res) => {
 
 // MIDDLEWARE ====================
 
-io.use((socket, next) => {
-  // se podria recibir un token
-  const token = socket.handshake.auth.token
+// io.use((socket, next) => {
+//   // se podria recibir un token
+//   const token = socket.handshake.auth.token
 
-  if (token == "mitoken") {
-    next()
-  } else {
-    const err = new Error("No puedes pasar")
-    err.data = {
-      details: "no pudiste ser autenticado"
-    }
-    next(err)
-  }
-})
+//   if (token == "mitoken") {
+//     next()
+//   } else {
+//     const err = new Error("No puedes pasar")
+//     err.data = {
+//       details: "no pudiste ser autenticado"
+//     }
+//     next(err)
+//   }
+// })
 
-io.on('connection', socket => {
-  //   socket.on("circle position", position => {
-  //   socket.broadcast.emit('move circle', position)
-  // })
+// io.on('connection', socket => {
+//   //   socket.on("circle position", position => {
+//   //   socket.broadcast.emit('move circle', position)
+//   // })
 
-  console.log(socket.id);
-})
+//   console.log(socket.id);
+// })
 
-httpServer.listen(3000);
+io.on("connection", socket => {
+
+  socket.on("circle position", position => {
+      socket.broadcast.emit("move circle", position);
+  });
+
+});
+
+httpServer.listen(4000);
