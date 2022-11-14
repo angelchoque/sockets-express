@@ -1,3 +1,6 @@
+// process.env.DEBUG = "*";
+process.env.DEBUG = "engine, socket.io:socket";
+
 import express from "express";
 import { createServer } from 'http';
 import path from "path";

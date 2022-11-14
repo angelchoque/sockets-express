@@ -238,7 +238,7 @@
 
 const socket = io({
   auth: {
-    token: "mitokenno"
+    token: "mitoken"
   }
 })
 
