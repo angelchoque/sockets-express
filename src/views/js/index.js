@@ -136,45 +136,66 @@
 // })
 
 
-const user = prompt("Escribe tu usuario")
-const profes = [
-  "Juan",
-  "GNDX",
-  "RETAX"
-]
+// const user = prompt("Escribe tu usuario")
+// const profes = [
+//   "Juan",
+//   "GNDX",
+//   "RETAX"
+// ]
 
-let socketNamespace, group;
+// let socketNamespace, group;
 
-const chat = document.querySelector('#chat')
-const namespace = document.querySelector("#namespace")
+// const chat = document.querySelector('#chat')
+// const namespace = document.querySelector("#namespace")
 
-if (profes.includes(user)) {
-  socketNamespace = io("/teachers")
-  group = "teachers"
+// if (profes.includes(user)) {
+//   socketNamespace = io("/teachers")
+//   group = "teachers"
 
-} else {
-  socketNamespace = io("/students")
-  group = "students"
-}
+// } else {
+//   socketNamespace = io("/students")
+//   group = "students"
+// }
 
-socketNamespace.on("connect", () => {
-  namespace.textContent = group;
+// socketNamespace.on("connect", () => {
+//   namespace.textContent = group;
+// })
+
+
+// const sendMessageNamespace = document.querySelector("#sendMessageNamespace")
+// sendMessageNamespace.addEventListener('click', () => {
+//   const message = prompt("escribe tu mensaje")
+//   socketNamespace.emit("message namespace", {
+//     message,
+//     user
+//   })
+// })
+
+// socketNamespace.on("message", data => {
+//   const {message, user} = data
+//   const li = document.createElement("li")
+//   li.textContent = `${user}: ${message}`
+
+//   chat.append(li)
+// })
+
+// OFFLINE
+
+const socket = io()
+const send = document.querySelector("#send")
+const disconnect = document.querySelector("#disconnect")
+const reconnect = document.querySelector("#connect")
+
+send.addEventListener("click", () => {
+  if (socket.connected) {
+    socket.emit("is connected", "esta connectado!!!")
+  }
 })
 
-
-const sendMessageNamespace = document.querySelector("#sendMessageNamespace")
-sendMessageNamespace.addEventListener('click', () => {
-  const message = prompt("escribe tu mensaje")
-  socketNamespace.emit("message namespace", {
-    message,
-    user
-  })
+disconnect.addEventListener('click', () => {
+  socket.disconnect()
 })
 
-socketNamespace.on("message", data => {
-  const {message, user} = data
-  const li = document.createElement("li")
-  li.textContent = `${user}: ${message}`
-
-  chat.append(li)
+reconnect.addEventListener('click', () => {
+  socket.connect()
 })

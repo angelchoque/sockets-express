@@ -119,21 +119,28 @@ app.get('/', (req, res) => {
 
 
 // NAMESPACES ===== io.of <- conecta a un namespace en especifico
-const teachers = io.of("teachers")
-const students = io.of("students")
+// const teachers = io.of("teachers")
+// const students = io.of("students")
 
-// usamos el namespace personalizado
-teachers.on("connection", socket => {
-  console.log(socket.id + " se a conectado a la sala de profes")
-  socket.on('message namespace', data => {
-    teachers.emit("message", data)
-  })
-})
+// // usamos el namespace personalizado
+// teachers.on("connection", socket => {
+//   console.log(socket.id + " se a conectado a la sala de profes")
+//   socket.on('message namespace', data => {
+//     teachers.emit("message", data)
+//   })
+// })
 
-students.on("connection", socket => {
-  console.log(socket.id + " se a conectado a la sala de estudiantes")
-  socket.on("message namespace", data => {
-    students.emit('message', data)
+// students.on("connection", socket => {
+//   console.log(socket.id + " se a conectado a la sala de estudiantes")
+//   socket.on("message namespace", data => {
+//     students.emit('message', data)
+//   })
+// })
+
+// OFFLINE
+io.on('connection', (socket) => {
+  socket.on('is connected', message => {
+    console.log(message)
   })
 })
 
