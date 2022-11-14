@@ -144,10 +144,29 @@ app.get('/', (req, res) => {
 //   })
 // })
 
+// MIDDLEWARE ====================
+
+io.use((socket, next) => {
+  // se podria recibir un token
+  const token = socket.handshake.auth.token
+
+  if (token == "mitoken") {
+    next()
+  } else {
+    const err = new Error("No puedes pasar")
+    err.data = {
+      details: "no pudiste ser autenticado"
+    }
+    next(err)
+  }
+})
+
 io.on('connection', socket => {
-    socket.on("circle position", position => {
-    socket.broadcast.emit('move circle', position)
-  })
+  //   socket.on("circle position", position => {
+  //   socket.broadcast.emit('move circle', position)
+  // })
+
+  console.log(socket.id);
 })
 
 httpServer.listen(3000);

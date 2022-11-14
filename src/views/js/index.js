@@ -202,36 +202,49 @@
 
 
 // ===================
-const socket = io()
-const drawCircle = position => {
-  circle.style.top = position.top
-  circle.style.left = position.left
-}
-const drag = e => {
-  // const clientX = e.clientX
-  // const clientY = e.clientY
+// const socket = io()
+// const drawCircle = position => {
+//   circle.style.top = position.top
+//   circle.style.left = position.left
+// }
+// const drag = e => {
+//   // const clientX = e.clientX
+//   // const clientY = e.clientY
 
-  const position = {
-    top: e.clientY + "px",
-    left: e.clientX + "px"
+//   const position = {
+//     top: e.clientY + "px",
+//     left: e.clientX + "px"
+//   }
+//   drawCircle(position)
+//   console.log("se envia el evento al servidor");
+//   // con volatile los eventos no se almacenan en el buffer
+//   socket.volatile.emit("circle position", position)
+//   // circle.style.top = clientY + "px"
+//   // circle.style.left = clientX + "px"
+// }
+
+// const circle = document.querySelector('#circle')
+// circle.addEventListener('mousedown', e => {
+//   document.addEventListener('mousemove', drag)
+// })
+// circle.addEventListener('mouseup', e => {
+//   document.removeEventListener('mousemove', drag)
+// })
+// socket.on('move circle', position => {
+//   // circle.style.top = position.top
+//   // circle.style.left = position.left
+//   drawCircle(position)
+// })
+
+const socket = io({
+  auth: {
+    token: "mitokenno"
   }
-  drawCircle(position)
-  console.log("se envia el evento al servidor");
-  // con volatile los eventos no se almacenan en el buffer
-  socket.volatile.emit("circle position", position)
-  // circle.style.top = clientY + "px"
-  // circle.style.left = clientX + "px"
-}
+})
 
-const circle = document.querySelector('#circle')
-circle.addEventListener('mousedown', e => {
-  document.addEventListener('mousemove', drag)
-})
-circle.addEventListener('mouseup', e => {
-  document.removeEventListener('mousemove', drag)
-})
-socket.on('move circle', position => {
-  // circle.style.top = position.top
-  // circle.style.left = position.left
-  drawCircle(position)
+// en caso de error en token
+socket.on("connect_error", err => {
+  console.log("error de connection😢")
+  console.log(err.message);
+  console.log(err.data.details)
 })
