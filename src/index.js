@@ -1,36 +1,36 @@
-// process.env.DEBUG = "*";
-process.env.DEBUG = "engine, socket.io:socket";
+// // process.env.DEBUG = "*";
+// process.env.DEBUG = "engine, socket.io:socket";
 
-import { instrument } from "@socket.io/admin-ui";
-import express from "express";
-import { createServer } from 'http';
-import path from "path";
-import { Server } from "socket.io";
-import * as url from 'url';
+// import { instrument } from "@socket.io/admin-ui";
+// import express from "express";
+// import { createServer } from 'http';
+// import path from "path";
+// import { Server } from "socket.io";
+// import * as url from 'url';
 
-const app = express();
-const httpServer = createServer(app);
-const io = new Server(httpServer, {
-  cors: {
-    origin: ["https://admin.socket.io"],
-    credentials: true
-  }
-});
-instrument(io, {
-  auth: {
-    type: "basic",
-    username: "admin",
-    password: "$2a$12$gC.uSjv5pskWFcQwkZ1oluAQJ97kVgIpIrfobHO7K8aJfw0Y8YFwG"
-  }
-})
+// const app = express();
+// const httpServer = createServer(app);
+// const io = new Server(httpServer, {
+//   cors: {
+//     origin: ["https://admin.socket.io"],
+//     credentials: true
+//   }
+// });
+// instrument(io, {
+//   auth: {
+//     type: "basic",
+//     username: "admin",
+//     password: "$2a$12$gC.uSjv5pskWFcQwkZ1oluAQJ97kVgIpIrfobHO7K8aJfw0Y8YFwG"
+//   }
+// })
  
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+// const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
-app.use(express.static(path.join(__dirname, '/views')));
+// app.use(express.static(path.join(__dirname, '/views')));
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/views/index.html');
-});
+// app.get('/', (req, res) => {
+//   res.sendFile(__dirname + '/views/index.html');
+// });
 
 // const socketsOnline = []
 
@@ -186,12 +186,46 @@ app.get('/', (req, res) => {
 //   console.log(socket.id);
 // })
 
-io.on("connection", socket => {
+// io.on("connection", socket => {
 
-  socket.on("circle position", position => {
-      socket.broadcast.emit("move circle", position);
-  });
+//   socket.on("circle position", position => {
+//       socket.broadcast.emit("move circle", position);
+//   });
 
-});
+// });
 
-httpServer.listen(4000);
+// httpServer.listen(4000);
+
+
+// CREATE A NEW PROJECT REALTIME WEB CHAT
+import cookieParser from "cookie-parser";
+import express from "express";
+import { createServer } from "http";
+import { join } from "path";
+import * as url from 'url';
+import realtimeServer from "./realtimeServer.js";
+
+import router from './routes/index.js'
+
+const app = express();
+const httpServer = createServer(app);
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+
+// Settings
+app.set("port", process.env.PORT || 4000);
+app.set("views", join(__dirname, "views"))
+app.use(cookieParser())
+
+// Routes
+app.use( router );
+
+// Public
+app.use( express.static( join(__dirname, "public") ) );
+
+// Levanto el servidor
+httpServer.listen( app.get("port"), () => {
+    console.log("El servidor está corriendo en el puerto ", app.get("port"));
+} );
+
+// Llamo al servidor de Socket.io
+realtimeServer(httpServer);
